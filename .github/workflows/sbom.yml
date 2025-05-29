@@ -18,11 +18,19 @@ jobs:
         with:
           node-version: "18"
 
+      - name: Cache Node.js modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Install dependencies
         run: npm install
 
       - name: Install CycloneDX BOM generator
-        run: npm install --save-dev @cyclonedx/bom
+        run: npm install --save-dev @cyclonedx/bom || npm install --save-dev @cyclonedx/bom
 
       - name: Generate SBOM
         run: node ./node_modules/@cyclonedx/bom/dist/cli/main.js --output sbom.json
