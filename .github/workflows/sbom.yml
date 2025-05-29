@@ -3,7 +3,7 @@ name: Generate SBOM
 on:
   push:
     branches:
-      - master # of 'main' als je repo zo heet
+      - master # Of 'main' als je branch zo heet
 
 jobs:
   sbom:
@@ -21,7 +21,7 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Download CycloneDX CLI (zonder checksum)
+      - name: Download CycloneDX CLI
         run: |
           # Download de binary
           curl -sSL -o cyclonedx https://github.com/CycloneDX/cyclonedx-cli/releases/latest/download/cyclonedx-linux-x64
@@ -29,8 +29,8 @@ jobs:
           # Maak uitvoerbaar
           chmod +x cyclonedx
 
-          # Toon versie als controle
-          ./cyclonedx version
+          # Toon versie
+          ./cyclonedx --version
 
       - name: Genereer SBOM
         run: ./cyclonedx sbom --output sbom.json --input . --type npm
