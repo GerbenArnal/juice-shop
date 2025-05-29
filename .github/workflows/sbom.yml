@@ -31,7 +31,7 @@ jobs:
 
       - name: Install CycloneDX BOM generator
         run: |
-          npm install --save-dev @cyclonedx/bom
+          npm install --save-dev @cyclonedx/bom --verbose
           if [ $? -ne 0 ]; then
             echo "Failed to install @cyclonedx/bom"
             exit 1
