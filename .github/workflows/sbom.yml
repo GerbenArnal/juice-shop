@@ -26,8 +26,11 @@ jobs:
           curl -sSL -o cyclonedx https://github.com/CycloneDX/cyclonedx-cli/releases/latest/download/cyclonedx-linux-x64
           chmod +x cyclonedx
 
+      - name: Verify CycloneDX CLI
+        run: ./cyclonedx version
+
       - name: Generate SBOM
-        run: ./cyclonedx sbom -o sbom.json
+        run: ./cyclonedx sbom --output sbom.json --input . --type npm
 
       - name: Upload SBOM
         uses: actions/upload-artifact@v4
