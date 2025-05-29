@@ -23,26 +23,12 @@ jobs:
 
       - name: Download CycloneDX CLI
         run: |
-          # Download the CycloneDX binary and checksum
           curl -sSL -o cyclonedx https://github.com/CycloneDX/cyclonedx-cli/releases/latest/download/cyclonedx-linux-x64
           curl -sSL -o cyclonedx.sha256 https://github.com/CycloneDX/cyclonedx-cli/releases/latest/download/cyclonedx-linux-x64.sha256
-
-          # Reformat checksum file for sha256sum -c
-          checksum=$(cut -d' ' -f1 cyclonedx.sha256)
+          checksum=$(cat cyclonedx.sha256)
           echo "$checksum  cyclonedx" > cyclonedx.sha256
-
-          # Verify checksum using sha256sum -c
-          if ! sha256sum -c cyclonedx.sha256 --status; then
-            echo "Error: Checksum verification failed."
-            exit 1
-          fi
-
-          # Make the binary executable
+          sha256sum -c cyclonedx.sha256
           chmod +x cyclonedx
-
-      - name: Verify CycloneDX CLI
-        run: |
-          ./cyclonedx version || { echo "Error: CycloneDX CLI verification failed."; exit 1; }
 
       - name: Generate SBOM
         run: ./cyclonedx sbom --output sbom.json --input . --type npm
