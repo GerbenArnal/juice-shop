@@ -30,7 +30,15 @@ jobs:
         run: npm install
 
       - name: Install CycloneDX BOM generator
-        run: npm install --save-dev @cyclonedx/bom || npm install --save-dev @cyclonedx/bom
+        run: |
+          npm install --save-dev @cyclonedx/bom
+          if [ $? -ne 0 ]; then
+            echo "Failed to install @cyclonedx/bom"
+            exit 1
+          fi
+
+      - name: Verify CycloneDX installation
+        run: ls -l node_modules/@cyclonedx/bom/dist/cli/main.js
 
       - name: Generate SBOM
         run: node ./node_modules/@cyclonedx/bom/dist/cli/main.js --output sbom.json
