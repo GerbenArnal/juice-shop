@@ -3,7 +3,7 @@ name: Generate SBOM
 on:
   push:
     branches:
-      - master # of 'master' als je dat gebruikt
+      - master
 
 jobs:
   sbom:
@@ -21,8 +21,13 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Generate SBOM with CycloneDX
-        run: npx @cyclonedx/bom -o sbom.json
+      - name: Download CycloneDX CLI
+        run: |
+          curl -sSL -o cyclonedx https://github.com/CycloneDX/cyclonedx-cli/releases/latest/download/cyclonedx-linux-x64
+          chmod +x cyclonedx
+
+      - name: Generate SBOM
+        run: ./cyclonedx sbom -o sbom.json
 
       - name: Upload SBOM
         uses: actions/upload-artifact@v4
