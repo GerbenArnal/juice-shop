@@ -25,7 +25,7 @@ jobs:
         run: npm install --save-dev @cyclonedx/bom
 
       - name: Generate SBOM
-        run: node ./node_modules/@cyclonedx/bom/bin/cyclonedx-npm.js --output sbom.json
+        run: node ./node_modules/@cyclonedx/bom/dist/cli/main.js --output sbom.json
 
       - name: Upload SBOM
         uses: actions/upload-artifact@v4
