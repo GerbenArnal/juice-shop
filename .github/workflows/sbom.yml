@@ -24,10 +24,8 @@ jobs:
       - name: Download CycloneDX CLI
         run: |
           curl -sSL -o cyclonedx https://github.com/CycloneDX/cyclonedx-cli/releases/latest/download/cyclonedx-linux-x64
-          if [ ! -f cyclonedx ]; then
-            echo "Error: Failed to download CycloneDX CLI."
-            exit 1
-          fi
+          curl -sSL -o cyclonedx.sha256 https://github.com/CycloneDX/cyclonedx-cli/releases/latest/download/cyclonedx-linux-x64.sha256
+          sha256sum -c cyclonedx.sha256 || { echo "Error: Checksum verification failed."; exit 1; }
           chmod +x cyclonedx
 
       - name: Verify CycloneDX CLI
