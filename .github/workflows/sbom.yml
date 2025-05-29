@@ -24,10 +24,15 @@ jobs:
       - name: Download CycloneDX CLI
         run: |
           curl -sSL -o cyclonedx https://github.com/CycloneDX/cyclonedx-cli/releases/latest/download/cyclonedx-linux-x64
+          if [ ! -f cyclonedx ]; then
+            echo "Error: Failed to download CycloneDX CLI."
+            exit 1
+          fi
           chmod +x cyclonedx
 
       - name: Verify CycloneDX CLI
-        run: ./cyclonedx version
+        run: |
+          ./cyclonedx version || { echo "Error: CycloneDX CLI verification failed."; exit 1; }
 
       - name: Generate SBOM
         run: ./cyclonedx sbom --output sbom.json --input . --type npm
