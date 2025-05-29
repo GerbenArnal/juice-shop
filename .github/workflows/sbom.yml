@@ -3,7 +3,7 @@ name: Generate SBOM
 on:
   push:
     branches:
-      - master
+      - master # Of 'main', afhankelijk van je repo
 
 jobs:
   sbom:
@@ -23,17 +23,23 @@ jobs:
 
       - name: Download CycloneDX CLI
         run: |
+          # Download binary en hash
           curl -sSL -o cyclonedx https://github.com/CycloneDX/cyclonedx-cli/releases/latest/download/cyclonedx-linux-x64
-          curl -sSL -o cyclonedx.sha256 https://github.com/CycloneDX/cyclonedx-cli/releases/latest/download/cyclonedx-linux-x64.sha256
-          checksum=$(cat cyclonedx.sha256)
-          echo "$checksum  cyclonedx" > cyclonedx.sha256
+          curl -sSL -o raw.sha256 https://github.com/CycloneDX/cyclonedx-cli/releases/latest/download/cyclonedx-linux-x64.sha256
+
+          # Herschrijf hash bestand in juist formaat
+          echo "$(cat raw.sha256)  cyclonedx" > cyclonedx.sha256
+
+          # Controleer hash
           sha256sum -c cyclonedx.sha256
+
+          # Maak binary uitvoerbaar
           chmod +x cyclonedx
 
-      - name: Generate SBOM
+      - name: Genereer SBOM (CycloneDX)
         run: ./cyclonedx sbom --output sbom.json --input . --type npm
 
-      - name: Upload SBOM
+      - name: Upload SBOM als artifact
         uses: actions/upload-artifact@v4
         with:
           name: sbom
